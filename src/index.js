@@ -30,17 +30,25 @@ telergafMessageForUserModel = (message) => ({
     : null,
 })
 
-const socksAgent = new SocksAgent({
-  socksHost: env.SOCKS_HOST,
-  socksPort: env.SOCKS_PORT,
-  socksUsername: env.SOCKS_USERNAME,
-  socksPassword: env.SOCKS_PASSWORD,
-});
 
-const bot = new Telegraf(env.BOT_TOKEN, {
-  username: 'message_collector_for_ai_bot',
-  telegram: { agent: socksAgent },
-})
+const proxySetting = () => {
+  const socksAgent = new SocksAgent({
+    socksHost: env.SOCKS_HOST,
+    socksPort: env.SOCKS_PORT,
+    socksUsername: env.SOCKS_USERNAME,
+    socksPassword: env.SOCKS_PASSWORD,
+  })
+
+  return { telegram: { agent: socksAgent } }
+}
+
+const bot new Telegraf(env.BOT_TOKEN, Object.assign(
+  { username: env.BOT_USERNAME },
+  env.PROXY === 'true'
+    ? proxySetting()
+    : {}
+))
+
 
 bot.telegram.getMe().then((botInfo) => {
   bot.options.username = botInfo.username
