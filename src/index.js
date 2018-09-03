@@ -42,7 +42,7 @@ const proxySetting = () => {
   return { telegram: { agent: socksAgent } }
 }
 
-const bot new Telegraf(env.BOT_TOKEN, Object.assign(
+const bot = new Telegraf(env.BOT_TOKEN, Object.assign(
   { username: env.BOT_USERNAME },
   env.PROXY === 'true'
     ? proxySetting()
